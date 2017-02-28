@@ -7,13 +7,12 @@ public class BoundaryValueProblemSolver {
 
     public static OutputData solve(InputData inputData) {
         double h;
-        //TODO: correct boundary values (numberOfGridPoints)
         double initialIntervalValue = inputData.getInitialIntervalValue();
         double finalIntervalValue = inputData.getFinalIntervalValue();
         int numberOfGridPoints = inputData.getNumberOfGridPoints();
         double[] sweepRateL = new double[numberOfGridPoints];
         double[] sweepRateK = new double[numberOfGridPoints];
-        double[] y = new double[numberOfGridPoints];
+        double[] y = new double[numberOfGridPoints + 1];
         double[] x = new double[numberOfGridPoints + 1];
         double[] alpha = new double[numberOfGridPoints];
         double[] beta = new double[numberOfGridPoints];
@@ -42,7 +41,7 @@ public class BoundaryValueProblemSolver {
             a[i] = 2 - alpha[i] * h;
             b[i] = 2 * h * h * beta[i] - 4;
             c[i] = 2 + alpha[i] * h;
-            f[i] = 2 * h * h * x[i]; // TODO: x? -> check it!
+            f[i] = 2 * h * h * x[i];
         }
 
         // forward sweep
@@ -53,15 +52,13 @@ public class BoundaryValueProblemSolver {
         sweepRateK[0] = inputData.getyInitialValue();
         for (int i = 1; i < numberOfGridPoints; i++) {
             sweepRateK[i] = ((f[i]) - a[i] * sweepRateK[i - 1]) / (b[i] + a[i] * sweepRateL[i - 1]);
-            // TODO: change the initialization of the array f
         }
 
         // reverse sweep
-        y[0] = inputData.getyInitialValue();
-        y[numberOfGridPoints - 1] = inputData.getyFinalValue();
+        // y[0] = inputData.getyInitialValue();
+        y[numberOfGridPoints] = inputData.getyFinalValue();
 
-        // TODO: fix cycle!
-        for (int i = numberOfGridPoints - 1; i >= numberOfGridPoints; i--) {
+        for (int i = numberOfGridPoints - 1; (i > initialIntervalValue) && (i >= 0); i--) {
             y[i] = sweepRateL[i] * y[i + 1] + sweepRateK[i];
         }
 
