@@ -80,6 +80,9 @@ public class RootLayoutController {
         if (numberOfGridPoints.getText() == null || numberOfGridPoints.getText().length() == 0 || !isDoubleValue(numberOfGridPoints.getText())) {
             errorMessage.append("Некорректное число узлов сетки!\n");
         }
+        if (Double.valueOf(numberOfGridPoints.getText()) <= 0) {
+            errorMessage.append("Число узлов сетки > 0");
+        }
 
         if (initialIntervalValueField.getText() == null || initialIntervalValueField.getText().length() == 0 || !isDoubleValue(initialIntervalValueField.getText())) {
             errorMessage.append("Некорректное начальное значение интервала!\n");
